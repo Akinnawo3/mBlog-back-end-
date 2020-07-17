@@ -22,13 +22,25 @@ class CommentManager(models.Manager):
         qs = super(CommentManager, self).filter(parent=None)
         return qs
 
-
+    def create_by_model_type(self, model_type, slug, content, user, parent_obj=None):
+        model_qs =ContentType.objects.filter(model=model_type)
+        if model_qs.exists():
+            my_model= model_qs.first().model_class()
+            obj_qs = my_model.objects.filter(slug=slug)
+            if obj_qs.exists() and obj_qs.count() ==1:
+                instance = self.model()
+                instance.content = content
+                instance.author = user
+                instance.content_type = model_qs.first()
+                instance.object_id = obj_qs.first().id
+                if parent_obj:
+                    instance.parent=parent_obj
+                instance.save()
+                return instance
 
 
 class Comment(models.Model):
-
-
-    author=models.ForeignKey('auth.user',default = 1,  on_delete=models.CASCADE,)
+    author=models.ForeignKey('auth.user',   on_delete=models.CASCADE,)
 
 
 
@@ -38,7 +50,7 @@ class Comment(models.Model):
 
     
     parent = models.ForeignKey('self', null=True, blank=True,on_delete= models.CASCADE,)
-    added   = models.DateTimeField(auto_now_add=True)
+    added  = models.DateTimeField(auto_now_add=True)
 
 
     content = models.TextField()

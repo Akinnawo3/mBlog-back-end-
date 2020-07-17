@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from .views import CommentView
+from .views import (CommentView,CommentCreateView)
 
 
 
@@ -9,8 +9,8 @@ from .views import CommentView
 
 
 router = DefaultRouter()
-router.register('', CommentView)
-
+router.register('/commentlist', CommentView)
+router.register('/create', CommentCreateView)
 
 urlpatterns = [
    path('', include(router.urls))
