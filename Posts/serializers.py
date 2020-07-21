@@ -20,12 +20,13 @@ class PostSerializer(serializers.ModelSerializer):
         fields = ["url","id", 'slug',"title","content",'publish', 'author','comments', 'no_of_comments' ]
         
     def get_comments(self, obj):
-        comment_qs = Comment.objects.filter_by_instance(obj)
+        comment_qs = Comment.objects.filter_by_instance(obj).filter(parent=None)
+        # comment_qs = Comment.objects.all()
         commentz = CommentSerializer(comment_qs, many=True).data
         return commentz
 
     def get_no_of_comments(self,obj):
-        return Comment.objects.filter_by_instance(obj).count()
+        return Comment.objects.filter_by_instance(obj).filter(parent=None).count()
 
     def get_author(self,obj):
         return obj.author.first_name +" "+ obj.author.last_name

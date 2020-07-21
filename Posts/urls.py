@@ -8,7 +8,7 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
-router.register(r'post', PostView, basename='Post')
+router.register('', PostView, basename='Post')
 
 
 urlpatterns = [

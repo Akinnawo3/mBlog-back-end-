@@ -12,19 +12,19 @@ from rest_framework.serializers import (ModelSerializer,
 
 
 
-def comment_serializer_creator(model_type, slug=None ,parent_id=None , user = None):
+def comment_serializer_creator(model_type, parent_id,slug=None , user = None):
     class CommentCreateSerializer(ModelSerializer):
         class Meta:
             model=Comment
-            fields=['id', 'parent','content','added']
+            fields=['id','content','added']
 
         def __init__(self, *args, **kwargs):
             self.model_type = model_type
             self.slug= slug
             self.parent_obj = None
             if parent_id:
-                parent_qs = comment.objects.filter(id=parent_id)
-                if parent_qs.exist() and parent_qs.count()==1:
+                parent_qs = Comment.objects.filter(id=parent_id)
+                if parent_qs.exists() and parent_qs.count()==1:
                     self.parent_obj=parent_qs.first()
             return super(CommentCreateSerializer,self).__init__( *args, **kwargs)
                 
@@ -35,11 +35,10 @@ def comment_serializer_creator(model_type, slug=None ,parent_id=None , user = No
                 raise ValidationError("invalid content type " )
             my_model = model_qs.first().model_class()
             obj_qs = my_model.objects.filter(slug=self.slug)
-            if not obj_qs.exists() :
+            if not obj_qs.exists() or obj_qs.count()!=1:
                 # '''or obj_qs.count !=1
                 raise ValidationError("this is not a slug for this content type")
             return data
-            
         def create(self, validated_data):
             content = validated_data.get("content")
             if user:
@@ -54,6 +53,7 @@ def comment_serializer_creator(model_type, slug=None ,parent_id=None , user = No
                         slug = slug,
                         content=content,
                         user= main_user,
+                        parent_obj= parent_obj
                     )
             return comment 
     return CommentCreateSerializer
@@ -65,28 +65,28 @@ def comment_serializer_creator(model_type, slug=None ,parent_id=None , user = No
 
 
 
-class CommentChildserializer(ModelSerializer):
-    class Meta:
-        model = Comment
-        fields=['id', 'content', 'added']
+# class CommentDetailserializer(ModelSerializer):
+#     class Meta:
+#         model = Comment
+#         fields=['id', 'content', 'added']
 
 
 
-class CommentSerializer(ModelSerializer):
-    # url = HyperlinkedIdentityField(view_name='comment-detail', )
+class CommentSerializer(ModelSerializer): 
+    # url = HyperlinkedIdentityField(view_name='Comment-detail',lookup_field='id') 
     replies = SerializerMethodField()
     author  = SerializerMethodField()
     no_of_replies= SerializerMethodField()
     class Meta: 
         model = Comment
-        fields ='__all__'
-       
+        fields=['id', 'content', 'added','author','no_of_replies','replies']
+        read_only_fields=['object_id','content_type', 'parent',]
 
     def get_replies(self,obj):
         # if obj.is_parent:
         #     return CommentChildserializer(obj.children(),  many=True).data
         # return None
-        return CommentChildserializer(obj.children(),  many=True).data
+        return CommentSerializer(obj.children(),  many=True).data
       
         '''
  i had to comment out the 'if condition' because all the objects comming from the comment class are all parents
