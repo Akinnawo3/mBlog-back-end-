@@ -9,9 +9,9 @@ from .views import (CommentListView,CommentCreateView,CommentDetailView)
 
 
 router = DefaultRouter()
-router.register('', CommentListView, basename='Comment')
-router.register('create', CommentCreateView)
-router.register('', CommentDetailView)
+router.register('', CommentListView,basename='comment')
+router.register('create', CommentCreateView,basename='comment')
+router.register('', CommentDetailView, basename='comment')
 
 urlpatterns = [
    path('', include(router.urls)),

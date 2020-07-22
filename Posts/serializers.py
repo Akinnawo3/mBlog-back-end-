@@ -10,14 +10,14 @@ from Comments.models import Comment
 
 
 class PostSerializer(serializers.ModelSerializer):
-    url = serializers.HyperlinkedIdentityField(view_name='Post-detail', lookup_field="slug")
+    # url = serializers.HyperlinkedIdentityField(view_name='Post-detail', lookup_field="slug")
     # author = serializers.ReadOnlyField(source= 'author.username')
     author =serializers.SerializerMethodField()
     comments= serializers.SerializerMethodField()
     no_of_comments=serializers.SerializerMethodField()
     class Meta:
         model = Post
-        fields = ["url","id", 'slug',"title","content",'publish', 'author','comments', 'no_of_comments' ]
+        fields = ["id", 'slug',"title","content",'publish', 'author','comments', 'no_of_comments' ]
         
     def get_comments(self, obj):
         comment_qs = Comment.objects.filter_by_instance(obj).filter(parent=None)

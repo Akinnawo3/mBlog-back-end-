@@ -8,6 +8,7 @@ from .models import Comment
 from rest_framework.serializers import (ModelSerializer,
                                         SerializerMethodField,
                                         HyperlinkedIdentityField,
+                                        HyperlinkedModelSerializer,
                                         ValidationError)
 
 
@@ -65,7 +66,7 @@ def comment_serializer_creator(model_type, parent_id,slug=None , user = None):
 
 
 
-# class CommentDetailserializer(ModelSerializer):
+# class CommentChildserializer(ModelSerializer):
 #     class Meta:
 #         model = Comment
 #         fields=['id', 'content', 'added']
@@ -73,13 +74,13 @@ def comment_serializer_creator(model_type, parent_id,slug=None , user = None):
 
 
 class CommentSerializer(ModelSerializer): 
-    # url = HyperlinkedIdentityField(view_name='Comment-detail',lookup_field='id') 
+    # url = HyperlinkedIdentityField(view_name='comment-detail') 
     replies = SerializerMethodField()
     author  = SerializerMethodField()
     no_of_replies= SerializerMethodField()
     class Meta: 
         model = Comment
-        fields=['id', 'content', 'added','author','no_of_replies','replies']
+        fields=['content', 'added','author','no_of_replies','replies']
         read_only_fields=['object_id','content_type', 'parent',]
 
     def get_replies(self,obj):
