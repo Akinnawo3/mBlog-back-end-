@@ -1,5 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from django.db.models import Q
+
+
+
 User=get_user_model()
 
 
@@ -30,8 +34,16 @@ class AccountCreateSerializer(serializers.ModelSerializer):
                                      {"write_only":True}
                          }
 
+    def validate(self, data):
+        email = data["email"]
+        user_qs= User.objects.filter(email=email)
+        if user_qs.exists():
+            raise serializers.ValidationError("A user with this email already exist")
+        return data
+
     def validate_Confirm_email(self,value):  
         # the value parameter provides the function with the value of 'Confirm_email' field automatically
+        # the get_initial() function provides the function with all the value of the items in the serializer
         data = self.get_initial()
         email1 = data.get("email")
         email2 = value
@@ -42,6 +54,10 @@ class AccountCreateSerializer(serializers.ModelSerializer):
         if user_qs.exists():
             raise serializers.ValidationError("A user with this email already exist")
         return value
+
+
+
+
 
     def validate_Confirm_password(self, value):
         data =self.get_initial()
@@ -66,3 +82,47 @@ class AccountCreateSerializer(serializers.ModelSerializer):
         user_instance.set_password(password)
         user_instance.save()
         return validated_data
+
+
+
+
+
+
+class AccountLoginSerializer(serializers.ModelSerializer):
+    token= serializers.CharField(allow_blank=True, read_only=True)
+    email = serializers.EmailField(required=False, allow_blank=True)
+    username = serializers.CharField(required=False, allow_blank=True)
+    class Meta:
+        model = User
+        fields  = ["username", "email", 'password','token']
+    extra_kwargs = { 
+                            "password":
+                                        {"write_only":True}
+                            }
+
+    def validate(self, data):
+        user_obj = None
+
+
+        email = data["email"]
+        username = data["username"]
+        password = data["password"]
+        if not email and not username:
+            raise serializers.ValidationError("A Username or email must be provided to login")
+        user = User.objects.filter(
+                                    Q(email = email)|
+                                    Q(username = username)
+                                     ).distinct()
+        # user = user.exclude(email__isnull=True).exclude(email__iexact="")
+        if user.exists() and user.count()==1:
+            user_obj = user.first()
+        else:
+            raise serializers.ValidationError("The Username or Email is not Valid")
+        
+        if user_obj:
+            if not user_obj.check_password(password):
+                raise serializers.ValidationError(" Incorrect Password")
+        
+        data["token"] = "SOME RANDOM TOKEN"
+   
+        return data

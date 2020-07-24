@@ -9,7 +9,8 @@ from .views import AccountCreateView
 router = DefaultRouter()
 
 
-router.register('register', AccountCreateView)
+router.register('', AccountCreateView)
+
 
 
 

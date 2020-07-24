@@ -4,9 +4,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 
+from Accounts.views import AccountLoginView
 
-from rest_framework.routers import DefaultRouter
-router = DefaultRouter()
+
+
+# from rest_framework.routers import DefaultRouter
+# router = DefaultRouter()
 
 
 
@@ -16,9 +19,10 @@ router = DefaultRouter()
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-     path('posts/',include('Posts.urls')),
-     path('accounts/',include('Accounts.urls')),
-     path('comments/',include('Comments.urls')),
+    path('posts/',include('Posts.urls')),
+    path('comments/',include('Comments.urls')),
+    path('login/', AccountLoginView.as_view()),
+    path('register/', include('Accounts.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
 
