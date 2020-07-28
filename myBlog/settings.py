@@ -127,3 +127,40 @@ STATIC_URL = '/static/'
 MEDIA_URL='/media/'
 
 MEDIA_ROOT= os.path.join(BASE_DIR,'media')
+
+
+
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer'
+    ],
+    # 
+    'DEFAULT_AUTHENTICATION_CLASSES':[
+    # 'rest_framework.authentication.SessionAuthentication',
+    'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    # 'rest_framework.authentication.BasicAuthentication'
+],
+    'DEFAULT_PERMISSION_CLASSES':[
+    # 'rest_framework.permissions.AllowAny',
+]
+}
+
+
+
+
+'''
+jwt authentication stuff
+curl -X POST -d "username=Akinnawo3&password=Akinnawo3" http://127.0.0.1:8000/api-token-auth/
+
+
+
+
+curl -H "Authorization: JWT <your_token>" http://localhost:8000/protected-url/
+curl -H "Authorization: JWT curl -H "Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6IkFraW5uYXdvMyIsImV4cCI6MTU5NTY3NjU2MywiZW1haWwiOiJBa2lubmF3b3ZpY3RvckBnbWlhbC5jb20ifQ.khs23oT2PkiED5XYMW044HfSDjzrNeuOa5AZdNvHpUI" http://localhost:8000/protected-url/
+" http://127.0.0.1:8000/posts/
+curl -H "Authorization: JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6IkFraW5uYXdvMyIsImV4cCI6MTU5NTg1MDc2NywiZW1haWwiOiJBa2lubmF3b3ZpY3RvckBnbWlhbC5jb20ifQ.gADY_Me8i-U1Q8NXtCzWeyzQV2VjlIlTctrUEEqx8Sk" http://127.0.0.1:8000/posts/2
+
+'''

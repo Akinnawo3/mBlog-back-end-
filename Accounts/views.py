@@ -30,7 +30,6 @@ class AccountCreateView(mixins.CreateModelMixin, GenericViewSet):
     queryset= User.objects.all()
 
 class AccountLoginView(APIView):
-    permission_classes=[permissions.AllowAny]
     serializer_class=AccountLoginSerializer
     def post(self, request, *args, **kwargs):
         data = request.data

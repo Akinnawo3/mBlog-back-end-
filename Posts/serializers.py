@@ -17,8 +17,8 @@ class PostSerializer(serializers.ModelSerializer):
     no_of_comments=serializers.SerializerMethodField()
     class Meta:
         model = Post
-        fields = ["id", 'slug',"title","content",'publish', 'author','comments', 'no_of_comments' ]
-        
+        fields = ["id", 'slug',"title","content",'publish', 'author','comments', 'no_of_comments', 'draft' ]
+        read_only_fields=['slug']
     def get_comments(self, obj):
         comment_qs = Comment.objects.filter_by_instance(obj).filter(parent=None)
         # comment_qs = Comment.objects.all()

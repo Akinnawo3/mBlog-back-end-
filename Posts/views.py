@@ -1,5 +1,5 @@
 from .models import Post
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import (ModelViewSet, GenericViewSet, mixins)
 from .serializers import PostSerializer
 from rest_framework import permissions
 from myBlog.Permisions import IsOwnerOrReadOnly
@@ -14,16 +14,12 @@ from django.db.models import Q
 
 
 
-
-
-
-
-
 class PostView(ModelViewSet):
 
     serializer_class=PostSerializer
     lookup_field='slug'
     permission_classes =[permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
+    # permission_classes =[permissions.IsAuthenticated]
     pagination_class= PostPageNumberPagination
     filter_backends = [SearchFilter, OrderingFilter]
     search_fields = ['title', 'content','author__first_name','author__last_name']

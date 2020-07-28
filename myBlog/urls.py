@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 
 
 from Accounts.views import AccountLoginView
-
+from rest_framework_jwt.views import obtain_jwt_token
 
 
 # from rest_framework.routers import DefaultRouter
@@ -21,6 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('posts/',include('Posts.urls')),
     path('comments/',include('Comments.urls')),
+    path('api-token-auth/', obtain_jwt_token),
     path('login/', AccountLoginView.as_view()),
     path('register/', include('Accounts.urls')),
 ]
