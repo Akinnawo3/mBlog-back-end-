@@ -25,7 +25,7 @@ SECRET_KEY = 'sjc@5fh@e6!$^%nwz@@$2^swzss-n9v&cbp3)#g$@9$%tgls^7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -41,18 +41,22 @@ INSTALLED_APPS = [
     'Comments',
     'Accounts',
     'rest_framework',
-    'Blogimages'
+    'corsheaders',
+    'Blogimages',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'myBlog.urls'
 
@@ -140,11 +144,11 @@ REST_FRAMEWORK = {
     # 
     'DEFAULT_AUTHENTICATION_CLASSES':[
     # 'rest_framework.authentication.SessionAuthentication',
-    'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     # 'rest_framework.authentication.BasicAuthentication'
 ],
     'DEFAULT_PERMISSION_CLASSES':[
-    # 'rest_framework.permissions.AllowAny',
+    'rest_framework.permissions.AllowAny',
 ]
 }
 
